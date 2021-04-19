@@ -1,0 +1,6 @@
+venv
+
+JSON/*
+state.json
+
+Classes/__pycache__
