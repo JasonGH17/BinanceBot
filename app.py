@@ -3,8 +3,6 @@ import json
 import time
 import Classes.BotClass as Bot
 
-state = "False"
-
 since = 0.5  # Half a day (12 Hours)
 pairs = Bot.get_pairs()
 mva = Bot.load_crypto_data_from_file()

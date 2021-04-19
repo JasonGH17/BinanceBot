@@ -57,7 +57,7 @@ def get_crypto_data(symbol, since):
     bm.start_aggtrade_socket(symbol, process_message)
     bm.start()
 
-    interval = '3m'
+    interval = '1m'
     past_days = since
 
     start_str = str(
@@ -231,6 +231,7 @@ def check_opportunity(data, name, sell, buy):
     previous_value = 0
     trends = []
     for mva in data["close"][-10:]:
+        print(mva)
         if previous_value == 0:
             previous_value = mva
         else:

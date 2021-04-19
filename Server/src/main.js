@@ -1,15 +1,12 @@
 const fs = require("fs")
 
-const togglebtn = document.getElementById("toggle-bot")
-let state = false
+const togglebtn = document.getElementById("bot-toggle")
 
 togglebtn.addEventListener("click", ()=>{
-    state = !state
-    let data = {state: state}
+    let data = {state: togglebtn.checked}
     let jstring = JSON.stringify(data, null, 4)
     fs.writeFile("../state.json", jstring, err=>{
         if(err) throw err
         console.log("State written to file")
     })
-    console.log(state)
 })
