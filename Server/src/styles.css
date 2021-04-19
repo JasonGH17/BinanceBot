@@ -1,24 +1,25 @@
 html, body {
-	background-color: #343432;
+	background-color: #333333;
 	padding: 0;
 	margin: 0;
 }
 
 p {
-	color: whitesmoke;
+	color: antiquewhite;
 	font-family: 'Courier New';
 }
 
 .top {
 	display: flex;
-	background-color: steelblue;
+	background-color: #f0b90b;
 	justify-content: center;
 	align-items: center;
 	height: 70px;
 	padding: 10px;
 }
 .top > p {
-	font-size: larger;
+	font-size: x-large;
+	font-weight: bold;
 }
 
 .main {

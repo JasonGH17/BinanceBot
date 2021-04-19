@@ -1,6 +1,6 @@
 import { app, BrowserWindow } from "electron";
 
-const fs = require("fs")
+const fs = require("fs");
 
 if (require("electron-squirrel-startup")) {
 	// eslint-disable-line global-require
@@ -11,8 +11,11 @@ let mainWindow;
 
 const createWindow = () => {
 	mainWindow = new BrowserWindow({
-		width: 800,
+		width: 900,
 		height: 600,
+		title: "Binance Bot",
+		resizable: false,
+		icon: __dirname + "/icon.png",
 		webPreferences: {
 			nodeIntegration: true,
 			contextIsolation: false
@@ -20,7 +23,7 @@ const createWindow = () => {
 	});
 
 	mainWindow.loadURL(`file://${__dirname}/index.html`);
-  mainWindow.setMenuBarVisibility(null)
+	mainWindow.setMenuBarVisibility(null);
 
 	mainWindow.on("closed", () => {
 		mainWindow = null;

@@ -1,8 +1,8 @@
 {
-  "name": "server",
-  "productName": "server",
+  "name": "binancebot",
+  "productName": "BinanceBot",
   "version": "1.0.0",
-  "description": "My Electron application description",
+  "description": "UI for a crypto trading bot.",
   "main": "src/index.js",
   "scripts": {
     "start": "electron-forge start",
@@ -32,7 +32,7 @@
         "packageManager": "npm"
       },
       "electronWinstallerConfig": {
-        "name": "server"
+        "name": "BinanceBot"
       },
       "electronInstallerDebian": {},
       "electronInstallerRedhat": {},
@@ -42,7 +42,7 @@
       },
       "windowsStoreConfig": {
         "packageName": "",
-        "name": "server"
+        "name": "Binance Bot"
       }
     }
   },
