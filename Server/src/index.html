@@ -11,11 +11,20 @@
       <p>Binance Bot</p>
     </div>
     <div class="main">
-      <label class="switch">
-        <input type="checkbox" id="bot-toggle">
-        <span class="slider"></span>
-        <p>Toggle Bot</p>
-      </label>
+        <div>
+            <label class="switch">
+              <input type="checkbox" id="bot-toggle">
+              <span class="slider"></span>
+            </label>
+            <p>Toggle Bot</p>
+        </div>
+        <div class="jumbotron">
+            <div class="inputs">
+                <label>Pair:</label>
+                <input type="text" id="pair-input" class="pair-in" placeholder="BTCUSDT" required>
+                <input type="button" id="submit-pair" class="submit-btn" value="Submit">
+            </div>
+        </div>
     </div>
   </body>
 </html>

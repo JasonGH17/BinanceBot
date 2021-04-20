@@ -33,9 +33,9 @@ const createWindow = () => {
 app.on("ready", createWindow);
 
 app.on("window-all-closed", () => {
-	// fs.writeFile("../state.json", jstring, (err) => {
-	// 	if (err) throw err;
-	// });
+	fs.writeFile("../state.json", jstring, (err) => {
+		if (err) throw err;
+	});
 	if (process.platform !== "darwin") {
 		app.quit();
 	}
