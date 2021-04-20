@@ -54,7 +54,7 @@ def save_balance(balance):
 
 def get_crypto_data(symbol, since):
     bm = BinanceSocketManager(binance)
-    bm.start_aggtrade_socket(symbol, process_message)
+    key = bm.start_aggtrade_socket(symbol, process_message)
     bm.start()
 
     interval = '1m'
@@ -67,6 +67,7 @@ def get_crypto_data(symbol, since):
         symbol=symbol, start_str=start_str, interval=interval)
 
     return D
+    bm.stop_socket(key)
 
 
 def get_purchasing_price(name):
