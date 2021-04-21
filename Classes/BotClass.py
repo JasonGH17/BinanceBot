@@ -20,13 +20,10 @@ binance = Client(data["APIKEY"], data["APISECRET"])
 def process_message(msg):
     pass
 
+pairs = []
 
-def get_pairs():
-    return ["DOGEUSDT"]
-
-
-pairs = get_pairs()
-
+def set_pairs(pairs):
+    pairs = pairs
 
 def get_balance():
     with open(Path(__file__).parent / "../JSON/Balance.json", "r") as f:
