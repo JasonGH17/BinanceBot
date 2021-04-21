@@ -15,8 +15,6 @@ since = 0.5  # Half a day (12 Hours)
 pairs = get_pair()
 mva = Bot.load_crypto_data_from_file()
 
-Bot.set_pairs(pairs)
-
 if __name__ == "__main__":
     while True:
         s = get_run()

@@ -33,6 +33,12 @@ const createWindow = () => {
 app.on("ready", createWindow);
 
 app.on("window-all-closed", () => {
+    const d = require("../../state.json")
+    let data = {
+		state: false,
+		pair: d.pair
+	};
+	let jstring = JSON.stringify(data, null, 4);
 	fs.writeFile("../state.json", jstring, (err) => {
 		if (err) throw err;
 	});

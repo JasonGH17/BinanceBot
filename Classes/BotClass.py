@@ -19,11 +19,11 @@ binance = Client(data["APIKEY"], data["APISECRET"])
 
 def process_message(msg):
     pass
+with open(Path(__file__).parent / "../state.json") as pf:
+    pairs = json.load(pf)["pair"]
 
-pairs = []
-
-def set_pairs(pairs):
-    pairs = pairs
+def get_pairs():
+    return pairs
 
 def get_balance():
     with open(Path(__file__).parent / "../JSON/Balance.json", "r") as f:
@@ -97,11 +97,10 @@ def load_trades():
                 trades[crypto] = []
         return trades
 
-
 def save_crypto_data(data):
+    print(data)
     with open(Path(__file__).parent / "../JSON/Data.json", "w") as f:
         json.dump(data, f, indent=4)
-
 
 def load_crypto_data_from_file():
     data = {}
@@ -122,6 +121,7 @@ def make_crypto_data(data):
             "close": [],
             "prices": []
         }
+    print("here: ", get_pairs())
     return data
 
 
@@ -205,8 +205,8 @@ def check_data(name, crypto_data, buy, mva):
     low = 0
     close = 0
 
-    for b in crypto_data:
-        if b not in mva[name]['prices']:
+    for b in crypto_data[-100:]:
+        if b not in mva[name]["prices"]:
             mva[name]["prices"].append(b)
 
         high += float(b[3])
