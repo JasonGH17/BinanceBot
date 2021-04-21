@@ -8,6 +8,8 @@ import pandas as pd
 
 from binance.client import Client
 from binance.websockets import BinanceSocketManager
+from binance.exceptions import BinanceRequestException
+from requests.exceptions import Timeout
 
 with open(Path(__file__).parent / "../JSON/Key.json") as f:
     data = json.load(f)
@@ -62,13 +64,24 @@ def get_crypto_data(symbol, since):
 
     start_str = str(
         (pd.to_datetime('today')-pd.Timedelta(str(past_days)+' days')).date())
-
-    D = binance.get_historical_klines(
-        symbol=symbol, start_str=start_str, interval=interval)
-
-    return D
-    bm.stop_socket(key)
-
+    try:
+        D = binance.get_historical_klines(
+            symbol=symbol, start_str=start_str, interval=interval)
+        return D
+        bm.stop_socket(key)
+    except BinanceRequestException as e:
+        try:
+            print(e)
+            D = binance.get_historical_klines(
+                symbol=symbol, start_str=start_str, interval=interval)
+            return D
+            bm.stop_socket(key)
+        except Timeout as e:
+            print(e)
+            D = binance.get_historical_klines(
+                symbol=symbol, start_str=start_str, interval=interval)
+            return D
+            bm.stop_socket(key)
 
 def get_purchasing_price(name):
     trades = binance.get_symbol_ticker()
@@ -175,7 +188,7 @@ def get_available_funds():
 
 
 def Run(since, pairs, mva):
-    #while True:
+    # while True:
     for pair in pairs:
         trades = load_trades()
         if len(trades[pair]) > 0:
