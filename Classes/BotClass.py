@@ -52,10 +52,6 @@ def save_balance(balance):
 
 
 def get_crypto_data(symbol, since):
-    # bm = BinanceSocketManager(binance)
-    # key = bm.start_aggtrade_socket(symbol, process_message)
-    # bm.start()
-
     interval = '1m'
     past_days = since
 
@@ -65,20 +61,8 @@ def get_crypto_data(symbol, since):
         D = binance.get_historical_klines(
             symbol=symbol, start_str=start_str, interval=interval)
         return D
-        #bm.stop_socket(key)
-    except BinanceRequestException as e:
-        try:
-            print(e)
-            D = binance.get_historical_klines(
-                symbol=symbol, start_str=start_str, interval=interval)
-            return D
-            #bm.stop_socket(key)
-        except Timeout as e:
-            print(e)
-            D = binance.get_historical_klines(
-                symbol=symbol, start_str=start_str, interval=interval)
-            return D
-            #bm.stop_socket(key)
+    except:
+        print("Error getting crypto data...")
 
 def get_purchasing_price(name):
     trades = binance.get_symbol_ticker()

@@ -18,7 +18,9 @@ mva = Bot.load_crypto_data_from_file()
 if __name__ == "__main__":
     while True:
         s = get_run()
-        while s:
+        if s:
             Bot.Run(since, pairs, mva)
+        else:
+            print("Bot state: OFF")
         time.sleep(1)
         
