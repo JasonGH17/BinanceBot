@@ -3,11 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <title>Dashboard</title>
-
+    <script src="../node_modules/chart.js/dist/chart.js"></script>
+    <script src="dashboard.js" defer></script>
     <link href="styles.css" rel="stylesheet">
 </head>
-<body>
-    <div class="dashboard"></div>
-    <a href="index.html">Go Back</a>
+<body class="index">
+    <div class="top"><p>Dashboard</p></div>
+    <div class="main">
+        <div class="ySpaceBetween">
+            <p>Balance</p>
+            <a href="index.html"><p class="link">Go Back</p></a>
+        </div>
+        <div class="dashboard">
+            <canvas id="balancechart" width="850" height="375"></canvas>
+        </div>
+    </div>
 </body>
 </html>

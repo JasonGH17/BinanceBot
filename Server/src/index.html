@@ -5,18 +5,22 @@
     <title></title>
     <script src="main.js" defer></script>
     <link href="styles.css" rel="stylesheet">
+    <link href="toggle.css" rel="stylesheet">
   </head>
   <body class="index">
     <div class="top">
       <p>Binance Bot</p>
     </div>
     <div class="main">
-        <div>
-            <label class="switch">
-              <input type="checkbox" id="bot-toggle">
-              <span class="slider"></span>
-            </label>
-            <p>Toggle Bot</p>
+        <div class="ySpaceBetween">
+            <div>
+                <label class="switch">
+                  <input type="checkbox" id="bot-toggle">
+                  <span class="slider"></span>
+                </label>
+                <p>Toggle Bot</p>
+            </div>
+            <a href="dashboard.html"><p class="link">Dashboard</p></a>
         </div>
         <div class="jumbotron">
             <div class="inputs">
@@ -25,7 +29,6 @@
                 <input type="button" id="submit-pair" class="submit-btn" value="Submit">
             </div>
         </div>
-        <a href="dashboard.html"><p class="link">Dashboard</p></a>
     </div>
   </body>
 </html>

@@ -37,8 +37,8 @@
       "electronInstallerDebian": {},
       "electronInstallerRedhat": {},
       "github_repository": {
-        "owner": "",
-        "name": ""
+        "owner": "JasonGH17",
+        "name": "BinanceBot"
       },
       "windowsStoreConfig": {
         "packageName": "",
@@ -47,6 +47,7 @@
     }
   },
   "dependencies": {
+    "chart.js": "^3.1.1",
     "electron-compile": "^6.4.4",
     "electron-squirrel-startup": "^1.0.0"
   },
