@@ -27,6 +27,3 @@ pairsubmit.addEventListener("click", () => {
 		console.log("State written to file");
 	});
 });
-
-formatAMPM(new Date(1618936740000*1000))
-getTrades()
