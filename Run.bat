@@ -1,1 +1,1 @@
-.\venv\Scripts\activate.bat && cls && python app.py && pause && .\venv\Scripts\deactivate.bat
+cd Server && npm start && start cmd /k cd .. && .\venv\Scripts\activate.bat && cls && python app.py && pause && .\venv\Scripts\deactivate.bat

@@ -219,9 +219,7 @@ def check_data(name, crypto_data, buy, mva):
 
 
 def try_buy(data, name, crypto_data):
-    print("try buy")
     make_trade = check_opportunity(data, name, False, True)
-    print(make_trade)
     if make_trade:
         buy_crypto(crypto_data, name)
 
