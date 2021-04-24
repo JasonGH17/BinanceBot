@@ -67,10 +67,15 @@ def get_crypto_data(symbol, since):
         return D
     except:
         print("Error getting crypto data. Trying again in 5 minutes...")
-        time.sleep(300)
-        D = binance.get_historical_klines(
-            symbol=symbol, start_str=start_str, interval=interval)
-        return D
+        i = 0
+        while i < 3:
+            try:
+                time.sleep(300)
+                D = binance.get_historical_klines(
+                    symbol=symbol, start_str=start_str, interval=interval)
+                return D
+            except:
+                i = i + 1
 
 
 def get_purchasing_price(name):
@@ -178,7 +183,6 @@ def get_available_funds():
 
 
 def Run(since, pairs, mva):
-    # while True:
     for pair in pairs:
         trades = load_trades()
         if len(trades[pair]) > 0:
