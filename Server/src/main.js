@@ -4,6 +4,8 @@ const togglebtn = document.getElementById("bot-toggle");
 const pairinput = document.getElementById("pair-input");
 const pairsubmit = document.getElementById("submit-pair");
 
+togglebtn.checked = JSON.parse(fs.readFileSync("../state.json", "utf8")).state
+
 togglebtn.addEventListener("click", () => {
     let jsonpair = JSON.parse(fs.readFileSync("../state.json", "utf8")).pair
 	let data = {
