@@ -19,11 +19,15 @@ binance = Client(data["APIKEY"], data["APISECRET"])
 
 def process_message(msg):
     pass
+
+
 with open(Path(__file__).parent / "../state.json") as pf:
     pairs = json.load(pf)["pair"]
 
+
 def get_pairs():
     return pairs
+
 
 def get_balance():
     with open(Path(__file__).parent / "../JSON/Balance.json", "r") as f:
@@ -62,7 +66,12 @@ def get_crypto_data(symbol, since):
             symbol=symbol, start_str=start_str, interval=interval)
         return D
     except:
-        print("Error getting crypto data...")
+        print("Error getting crypto data. Trying again in 5 minutes...")
+        time.sleep(300)
+        D = binance.get_historical_klines(
+            symbol=symbol, start_str=start_str, interval=interval)
+        return D
+
 
 def get_purchasing_price(name):
     trades = binance.get_symbol_ticker()
@@ -81,10 +90,11 @@ def load_trades():
                 trades[crypto] = []
         return trades
 
+
 def save_crypto_data(data):
-    print(data)
     with open(Path(__file__).parent / "../JSON/Data.json", "w") as f:
         json.dump(data, f, indent=4)
+
 
 def load_crypto_data_from_file():
     data = {}
@@ -105,7 +115,6 @@ def make_crypto_data(data):
             "close": [],
             "prices": []
         }
-    print("here: ", get_pairs())
     return data
 
 
@@ -193,9 +202,9 @@ def check_data(name, crypto_data, buy, mva):
         if b not in mva[name]["prices"]:
             mva[name]["prices"].append(b)
 
-        high += float(b[3])
-        low += float(b[4])
-        close += float(b[5])
+        high += float(b[2])
+        low += float(b[3])
+        close += float(b[4])
 
     mva[name]["high"].append(high/100)
     mva[name]["low"].append(low/100)
@@ -210,7 +219,9 @@ def check_data(name, crypto_data, buy, mva):
 
 
 def try_buy(data, name, crypto_data):
+    print("try buy")
     make_trade = check_opportunity(data, name, False, True)
+    print(make_trade)
     if make_trade:
         buy_crypto(crypto_data, name)
 
@@ -226,7 +237,6 @@ def check_opportunity(data, name, sell, buy):
     previous_value = 0
     trends = []
     for mva in data["close"][-10:]:
-        print(mva)
         if previous_value == 0:
             previous_value = mva
         else:
