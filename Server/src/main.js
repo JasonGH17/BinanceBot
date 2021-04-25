@@ -30,3 +30,9 @@ pairsubmit.addEventListener("click", () => {
 		console.log("State written to file");
 	});
 });
+
+setInterval(()=>{
+    const data = JSON.parse(fs.readFileSync("../state.json", "utf-8"))
+    pairinput.value = data.pair[0]
+    togglebtn.checked = data.state
+}, 1000)
