@@ -35,4 +35,4 @@ Body example:
 "pair": (valid crypto pair)
 }
 ```
-If successful, it will return the message `State written to file`
+If successful, it will return the message `Pair written to file`
