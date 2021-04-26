@@ -41,14 +41,24 @@ usdtsubmit.addEventListener("click", () => {
 	});
 });
 
+let dataT = JSON.parse(fs.readFileSync("../state.json", "utf-8"));
+let tradeT = JSON.parse(fs.readFileSync("../JSON/Balance.json", "utf-8"));
+if (pairinput !== document.activeElement) {
+	pairinput.value = dataT.pair[0];
+}
+if (usdtinput !== document.activeElement) {
+	usdtinput.value = tradeT.USDT;
+}
+togglebtn.checked = dataT.state;
+
 setInterval(() => {
 	let data = JSON.parse(fs.readFileSync("../state.json", "utf-8"));
-	let trade = JSON.parse(fs.readFileSync("../JSON/Balance.json", "utf-8"))
+	let trade = JSON.parse(fs.readFileSync("../JSON/Balance.json", "utf-8"));
 	if (pairinput !== document.activeElement) {
 		pairinput.value = data.pair[0];
 	}
 	if (usdtinput !== document.activeElement) {
-		usdtinput.value = trade.USDT
+		usdtinput.value = trade.USDT;
 	}
 	togglebtn.checked = data.state;
 }, 2000);

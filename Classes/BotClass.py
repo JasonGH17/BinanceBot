@@ -1,4 +1,6 @@
 import json
+import os
+import io
 import decimal
 import time
 import datetime as dt
@@ -26,7 +28,36 @@ with open(Path(__file__).parent / "../state.json") as pf:
 
 
 def get_pairs():
-    return pairs
+    with open(Path(__file__).parent / "../state.json") as pf:
+        pairs = json.load(pf)["pair"]
+        return pairs
+
+
+def startup():
+    if os.path.isfile(Path(__file__).parent / "../JSON/Balance.json") and os.access(Path(__file__).parent / "../JSON/Balance.json", os.R_OK):
+        pass
+    else:
+        with io.open(os.path.join(Path(__file__).parent / "../JSON", 'Balance.json'), 'w') as db_file:
+            db_file.write(json.dumps({"USDT": 0}))
+    if os.path.isfile(Path(__file__).parent / "../JSON/Data.json") and os.access(Path(__file__).parent / "../JSON/Data.json", os.R_OK):
+        pass
+    else:
+        with io.open(os.path.join(Path(__file__).parent / "../JSON", 'Data.json'), 'w') as db_file:
+            pass
+    if os.path.isfile(Path(__file__).parent / "../JSON/Trades.json") and os.access(Path(__file__).parent / "../JSON/Trades.json", os.R_OK):
+        pass
+    else:
+        with io.open(os.path.join(Path(__file__).parent / "../JSON", 'Trades.json'), 'w') as db_file:
+            pass
+
+    if os.path.isfile(Path(__file__).parent / "../JSON/Key.json") and os.access(Path(__file__).parent / "../JSON/Key.json", os.R_OK):
+        pass
+    else:
+        with io.open(os.path.join(Path(__file__).parent / "../JSON", 'Key.json'), 'w') as db_file:
+            db_file.write(json.dumps({
+                "APIKEY": "",
+                "APISECRET": ""
+                }))
 
 
 def get_balance():
