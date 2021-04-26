@@ -50,5 +50,3 @@ Body example:
 }
 ```
 If successful, it will return the message `Balance written to file`
-
-------------
