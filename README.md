@@ -2,7 +2,7 @@
 
 ## Important
 
-This project is still in developement, and I won't take any responsibility for any loss you the bot might generate
+This project is still in developement, and we won't take any responsibility for any loss the bot might generate
 
 ## Webserver
 
