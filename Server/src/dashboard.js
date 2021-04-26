@@ -66,4 +66,4 @@ getTrades(balanceChart);
 
 setInterval(() => {
 	getTrades(balanceChart);
-}, 120000);
+}, 1000);

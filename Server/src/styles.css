@@ -56,9 +56,12 @@ a:hover, a:active {
 }
 
 .inputs {
+    width: 45%;
+    display: flex;
+    justify-content: space-between;
 	padding-top: 30px;
 }
-.inputs > .pair-in {
+.inputs > div > .pair-in {
 	padding: 5px;
 	padding-left: 5px;
 	border-width: 0px;
@@ -68,7 +71,7 @@ a:hover, a:active {
 	border-radius: 1.7px;
 	background-color: transparent;
 }
-.inputs > .submit-btn {
+.inputs > div > .submit-btn {
 	padding: 5px;
 	margin-left: 10px;
 	padding-left: 5px;

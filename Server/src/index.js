@@ -96,6 +96,14 @@ webapp.listen(8000, (err) => {
                 res.send("State written to file")
             });
         })
+        router.post("/usdt", (req, res) => {
+            let oldJson = JSON.parse(fs.readFileSync("../JSON/Balance.json", "utf-8"))
+            oldJson.USDT = req.body.usdt
+            fs.writeFile("../JSON/Balance.json", JSON.stringify(oldJson), (err) => {
+                if (err) throw err;
+                res.send("Balance written to file");
+            });
+        })
 
         webapp.use(express.json())
 		webapp.use("/", router);
