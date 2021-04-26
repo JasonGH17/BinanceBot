@@ -36,3 +36,12 @@ Body example:
 }
 ```
 If successful, it will return the message `Pair written to file`
+
+`/usdt`
+Body example:
+```
+{
+"usdt": (amount of USDT in string form)
+}
+```
+If successful, it will return the message `Balance written to file`
