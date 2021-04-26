@@ -3,7 +3,7 @@ const fs = require("fs");
 const balanceContext = document.getElementById("balancechart").getContext("2d");
 const priceContext = document.getElementById("pricechart").getContext("2d");
 
-let coin = JSON.parse(fs.readFileSync("../state.json", "utf-8")).pair[0]
+let coin = JSON.parse(fs.readFileSync("../state.json", "utf-8")).pair[0];
 
 let balanceChart = new Chart(balanceContext, {
 	type: "line",
@@ -67,15 +67,18 @@ function formatAMPM(date) {
 	hours = hours ? hours : 12;
 	minutes = minutes < 10 ? "0" + minutes : minutes;
 	var strTime = hours + ":" + minutes + " " + ampm;
+    console.log(strTime)
 	return strTime;
 }
 
 function getTrades(chart, pChart) {
 	const data = fs.readFileSync("../JSON/Trades.json");
-    const data2 = fs.readFileSync("../JSON/Data.json")
+	const data2 = fs.readFileSync("../JSON/Data.json");
 	const obj = JSON.parse(data)[Object.keys(JSON.parse(data))[0]].splice(-6);
-    const obj2 = JSON.parse(data2)[Object.keys(JSON.parse(data2))[0]].prices.splice(-9)
-    
+	const obj2 = JSON.parse(data2)[
+		Object.keys(JSON.parse(data2))[0]
+	].prices.splice(-6);
+
 	chart.data.datasets[0].data = [
 		obj[0].price_usd * obj[0].amount,
 		obj[1].price_usd * obj[1].amount,
@@ -99,21 +102,15 @@ function getTrades(chart, pChart) {
 		obj2[2][4],
 		obj2[3][4],
 		obj2[4][4],
-		obj2[5][4],
-		obj2[6][4],
-		obj2[7][4],
-		obj2[8][4]
+		obj2[5][4]
 	];
 	pChart.data.labels = [
-		formatAMPM(new Date(obj2[0][0]* 1000)),
-		formatAMPM(new Date(obj2[1][0]* 1000)),
-		formatAMPM(new Date(obj2[2][0]* 1000)),
-		formatAMPM(new Date(obj2[3][0]* 1000)),
-		formatAMPM(new Date(obj2[4][0]* 1000)),
-		formatAMPM(new Date(obj2[5][0]* 1000)),
-		formatAMPM(new Date(obj2[6][0]* 1000)),
-		formatAMPM(new Date(obj2[7][0]* 1000)),
-		formatAMPM(new Date(obj2[8][0]* 1000))
+		formatAMPM(new Date(obj2[0][0])),
+		formatAMPM(new Date(obj2[1][0])),
+		formatAMPM(new Date(obj2[2][0])),
+		formatAMPM(new Date(obj2[3][0])),
+		formatAMPM(new Date(obj2[4][0])),
+		formatAMPM(new Date(obj2[5][0]))
 	];
 
 	chart.update();
