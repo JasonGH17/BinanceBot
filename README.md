@@ -4,13 +4,9 @@
 
 This project is still in developement, and I won't take any responsibility for any loss you the bot might generate
 
-------------
-
 ## Webserver
 
 The webserver runs on port `8000` by default.
-
-------------
 
 ## Routes
 
@@ -20,8 +16,6 @@ Returns the last 6 trades made by the bot (3 Buys, 3 Sells).
 
 `/state`
 Returns the bot state and pair it's targeting.
-
-------------
 
 ### POST
 `/botState`
