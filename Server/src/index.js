@@ -93,7 +93,7 @@ webapp.listen(8000, (err) => {
             let jstring = JSON.stringify(data, null, 4);
             fs.writeFile("../state.json", jstring, (err) => {
                 if (err) throw err;
-                res.send("State written to file")
+                res.send("Pair written to file")
             });
         })
         router.post("/usdt", (req, res) => {
