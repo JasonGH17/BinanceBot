@@ -42,17 +42,13 @@ usdtsubmit.addEventListener("click", () => {
 });
 
 setInterval(() => {
-	const data = JSON.parse(fs.readFileSync("../state.json", "utf-8"));
-	const trade = JSON.parse(fs.readFileSync("../JSON/Trades.json", "utf-8"))[
-		Object.keys(
-			JSON.parse(fs.readFileSync("../JSON/Trades.json", "utf-8"))
-		)[0]
-	].splice(-1)[0];
+	let data = JSON.parse(fs.readFileSync("../state.json", "utf-8"));
+	let trade = JSON.parse(fs.readFileSync("../JSON/Balance.json", "utf-8"))
 	if (pairinput !== document.activeElement) {
 		pairinput.value = data.pair[0];
 	}
 	if (usdtinput !== document.activeElement) {
-		usdtinput.value = trade.amount * trade.price_usd;
+		usdtinput.value = trade.USDT
 	}
 	togglebtn.checked = data.state;
-}, 500);
+}, 2000);
