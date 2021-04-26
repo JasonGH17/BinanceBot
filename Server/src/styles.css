@@ -107,3 +107,22 @@ a:hover, a:active {
     padding: 10px;
     padding-right: 20px;
 }
+
+
+.scroll_enabled::-webkit-scrollbar {
+    width: 10px;
+}
+.scroll_enabled::-webkit-scrollbar-corner {
+    background: rgba(0,0,0,0);
+}
+.scroll_enabled::-webkit-scrollbar-thumb {
+    background-color: #ccc;
+    border-radius: 6px;
+    border: 3px solid rgba(0,0,0,0);
+    background-clip: content-box;
+    min-width: 32px;
+    min-height: 32px;
+}
+.scroll_enabled::-webkit-scrollbar-track {
+    background-color: transparent;
+}
