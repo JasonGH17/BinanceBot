@@ -12,7 +12,7 @@ def get_run():
 
 Bot.startup()
 
-since = 0.5  # Half a day (12 Hours)
+since = 0.25  # Half a day (12 Hours)
 pairs = get_pair()
 mva = Bot.load_crypto_data_from_file()
 

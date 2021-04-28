@@ -67,7 +67,6 @@ function formatAMPM(date) {
 	hours = hours ? hours : 12;
 	minutes = minutes < 10 ? "0" + minutes : minutes;
 	var strTime = hours + ":" + minutes + " " + ampm;
-    console.log(strTime)
 	return strTime;
 }
 

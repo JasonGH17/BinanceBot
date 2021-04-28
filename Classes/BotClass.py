@@ -1,3 +1,4 @@
+import math
 import json
 import os
 import io
@@ -18,10 +19,7 @@ with open(Path(__file__).parent / "../JSON/Key.json") as f:
 
 binance = Client(data["APIKEY"], data["APISECRET"])
 
-
-def process_message(msg):
-    pass
-
+i = 0.1
 
 with open(Path(__file__).parent / "../state.json") as pf:
     pairs = json.load(pf)["pair"]
@@ -57,7 +55,7 @@ def startup():
             db_file.write(json.dumps({
                 "APIKEY": "",
                 "APISECRET": ""
-                }))
+            }))
 
 
 def get_balance():
@@ -110,10 +108,8 @@ def get_crypto_data(symbol, since):
 
 
 def get_purchasing_price(name):
-    trades = binance.get_symbol_ticker()
-    for x in trades:
-        if(x["symbol"] == name):
-            return x["price"]
+    trades = load_trades()
+    return trades[name][-1]["price_usd"]
 
 
 def load_trades():
@@ -171,13 +167,14 @@ def save_trade(close, name, bought, sold, amount):
 
 def buy_crypto(crypto_data, name):
     analysis_data = clear_crypto_data(name)
-    #order = binance.order_market_buy(name, 0)
     price = float(crypto_data[-1][4])
     funds = get_available_funds()
     amount = funds * (1/price)
-    balance = update_balance(amount, name, price, False)
-    save_trade(price, name, True, False, amount)
-    print("BUY")
+    if(amount*price>=10):
+        balance = update_balance(amount, name, price, False)
+        save_trade(price, name, True, False, amount)
+        #order = binance.order_market_buy(name, 0)
+        print("BUY")
 
 
 def sell_crypto(crypto_data, name):
@@ -225,7 +222,8 @@ def Run(since, pairs, mva):
         else:
             crypto_data = get_crypto_data(symbol=pair, since=since)
             check_data(pair, crypto_data, True, mva)
-    time.sleep(119)
+    print("")
+    time.sleep(14)
 
 
 def check_data(name, crypto_data, buy, mva):
@@ -266,6 +264,8 @@ def try_sell(data, name, crypto_data):
 
 
 def check_opportunity(data, name, sell, buy):
+    global i
+
     count = 0
     previous_value = 0
     trends = []
@@ -294,19 +294,32 @@ def check_opportunity(data, name, sell, buy):
         price = float(data["prices"][-1][3])
         if sell:
             purchase_price = float(get_purchasing_price(name))
-            if price >= (purchase_price * 1.02):
-                print("Should sell with 10% profit")
+            if price >= (purchase_price + (purchase_price * i)):
+                print("Should sell with profit")
+                i = 0.10
                 return True
             if price < purchase_price:
-                print("Selling at a loss")
-                return True
+                print("Would sell at a loss, acceptable price: ", purchase_price +
+                      (purchase_price*i), " - Last purchase price: ", purchase_price, " - Current purchase price: ", price)
+                i = i - 0.01
+                if(i == 0):
+                    i = 0.01
+                return False
         areas.append(mva / price)
 
     if buy:
         counter = 0
         if count >= 5:
             for area in areas:
+                print("Area: ", area)
                 counter += area
+                print("Counter: ", counter)
+            print("Exponential: ",
+                  math.exp(-float(data["prices"][-1][3])*0.00005))
+            if(counter / 3 >= math.exp(-float(data["prices"][-1][3])*0.00005)):
+                print("Successful Buy: ",
+                      math.exp(-float(data["prices"][-1][3])*0.00005))
             if counter / 3 >= 1.5:
                 return True
+    print("Didn't buy", name,"acceptable price: ")
     return False
