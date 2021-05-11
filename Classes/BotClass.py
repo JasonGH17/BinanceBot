@@ -170,18 +170,21 @@ def buy_crypto(crypto_data, name):
     price = float(crypto_data[-1][4])
     funds = get_available_funds()
     amount = funds * (1/price)
-    if(amount*price>=10):
+    if(amount*price >= 10):
+        #order = binance.order_market_buy(name, amount)
         balance = update_balance(amount, name, price, False)
         save_trade(price, name, True, False, amount)
-        #order = binance.order_market_buy(name, 0)
         print("BUY")
 
 
-def sell_crypto(crypto_data, name):
+def sell_crypto(crypto_data, name, modify):
     balance = get_balance()
     analysis_data = clear_crypto_data(name)
     price = float(crypto_data[-1][4])
     amount = float(balance[name[:-4]])
+    if(modify):
+        amount = amount/4
+    #order = binance.order_market_sell(name, amount)
     balance = update_balance(amount, name, price, True)
     save_trade(price, name, False, True, amount)
     print("SELL")
@@ -259,8 +262,9 @@ def try_buy(data, name, crypto_data):
 
 def try_sell(data, name, crypto_data):
     make_trade = check_opportunity(data, name, True, False)
-    if make_trade:
-        sell_crypto(crypto_data, name)
+    print(make_trade)
+    if make_trade.get("trade"):
+        sell_crypto(crypto_data, name, make_trade.get("modify"))
 
 
 def check_opportunity(data, name, sell, buy):
@@ -291,35 +295,49 @@ def check_opportunity(data, name, sell, buy):
     areas = []
     for mva in reversed(data["close"][-5:]):
         area = 0
-        price = float(data["prices"][-1][3])
+        price = float(data["prices"][-1][4])
         if sell:
             purchase_price = float(get_purchasing_price(name))
             if price >= (purchase_price + (purchase_price * i)):
-                print("Should sell with profit")
-                i = 0.10
-                return True
+                if(i>=0):
+                    print("Should sell with profit:", i*100, ", price:",
+                        price, ", last purchase price:", purchase_price)
+                    i = 0.10
+                    return {"trade": True, "modify": False}
+                elif(i<0):
+                    print("Should sell with loss:", i*100, ", price:",
+                        price, ", last purchase price:", purchase_price)
+                    i = 0.10
+                    return {"trade": True, "modify": True}
             if price < purchase_price:
                 print("Would sell at a loss, acceptable price: ", purchase_price +
                       (purchase_price*i), " - Last purchase price: ", purchase_price, " - Current purchase price: ", price)
                 i = i - 0.01
-                if(i == 0):
-                    i = 0.01
-                return False
+                if(i <= -0.05):
+                    i = 0.1
+                return {"trade": False, "modify": False}
+
         areas.append(mva / price)
 
     if buy:
         counter = 0
         if count >= 5:
             for area in areas:
-                print("Area: ", area)
                 counter += area
-                print("Counter: ", counter)
-            print("Exponential: ",
-                  math.exp(-float(data["prices"][-1][3])*0.00005))
-            if(counter / 3 >= math.exp(-float(data["prices"][-1][3])*0.00005)):
-                print("Successful Buy: ",
+            if counter / 3 >= math.exp(-float(data["prices"][-1][3])*0.00005):
+                print("Exponential Price Weight:",
                       math.exp(-float(data["prices"][-1][3])*0.00005))
             if counter / 3 >= 1.5:
+                print("Successful Buy")
                 return True
-    print("Didn't buy", name,"acceptable price: ")
-    return False
+            else:
+                print("Current counter:", counter)
+        else:
+            print("Current count:", count)
+    print("Didn't buy", name, "acceptable price over",
+          float(data["prices"][-1][3]))
+    
+    if sell:
+        return {"trade": False, "modify": False}
+    else: 
+        return False
