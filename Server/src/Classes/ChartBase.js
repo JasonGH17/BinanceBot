@@ -112,7 +112,7 @@ class _TChart {
 		this.SetTrades();
 		setInterval(() => {
 			this.SetTrades();
-		}, intTime);
+		}, intTime/4);
 	}
 
 	SetTrades() {
