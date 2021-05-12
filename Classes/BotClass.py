@@ -2,17 +2,12 @@ import math
 import json
 import os
 import io
-import decimal
 import time
-import datetime as dt
 from pathlib import Path
 
 import pandas as pd
 
 from binance.client import Client
-from binance.websockets import BinanceSocketManager
-from binance.exceptions import BinanceRequestException
-from requests.exceptions import Timeout
 
 with open(Path(__file__).parent / "../JSON/Key.json") as f:
     data = json.load(f)
@@ -66,14 +61,20 @@ def get_balance():
             return {"ERR": "FAILED TO OPEN BALANCE FILE"}
 
 
-def update_balance(amount, name, price, sold):
+def update_balance(amount, name, price, sold, modified):
     balance = get_balance()
     if sold:
-        balance.pop(name[:-4], None)
+        if(modified):
+            balance[name[:-4]] = str(float(balance[name[:-4]]) - amount)
+        else:
+            balance.pop(name[:-4], None)
         balance["USDT"] = str(float(balance["USDT"]) + (amount*price))
     else:
         balance["USDT"] = str(float(balance["USDT"]) - (amount*price))
-        balance[name[:-4]] = str(amount)
+        if(name[:-4] in balance):
+            balance[name[:-4]] = str(float(balance[name[:-4]]) + amount)
+        else:
+            balance[name[:-4]] = str(amount)
 
     save_balance(balance)
     return balance
@@ -85,41 +86,41 @@ def save_balance(balance):
 
 
 def get_crypto_data(symbol, since):
-    interval = '1m'
-    past_days = since
+    interval='1m'
+    past_days=since
 
-    start_str = str(
+    start_str=str(
         (pd.to_datetime('today')-pd.Timedelta(str(past_days)+' days')).date())
     try:
-        D = binance.get_historical_klines(
+        D=binance.get_historical_klines(
             symbol=symbol, start_str=start_str, interval=interval)
         return D
     except:
         print("Error getting crypto data. Trying again in 5 minutes...")
-        i = 0
+        i=0
         while i < 3:
             try:
                 time.sleep(300)
-                D = binance.get_historical_klines(
+                D=binance.get_historical_klines(
                     symbol=symbol, start_str=start_str, interval=interval)
                 return D
             except:
-                i = i + 1
+                i=i + 1
 
 
 def get_purchasing_price(name):
-    trades = load_trades()
+    trades=load_trades()
     return trades[name][-1]["price_usd"]
 
 
 def load_trades():
-    trades = {}
+    trades={}
     with open(Path(__file__).parent / "../JSON/Trades.json", "r") as f:
         try:
-            trades = json.load(f)
+            trades=json.load(f)
         except:
             for crypto in pairs:
-                trades[crypto] = []
+                trades[crypto]=[]
         return trades
 
 
@@ -129,19 +130,19 @@ def save_crypto_data(data):
 
 
 def load_crypto_data_from_file():
-    data = {}
+    data={}
     with open(Path(__file__).parent / "../JSON/Data.json", "r") as f:
         try:
-            data = json.load(f)
+            data=json.load(f)
         except:
-            data = make_crypto_data(data)
+            data=make_crypto_data(data)
             save_crypto_data(data)
     return data
 
 
 def make_crypto_data(data):
     for name in get_pairs():
-        data[name] = {
+        data[name]={
             "high": [],
             "low": [],
             "close": [],
@@ -151,7 +152,7 @@ def make_crypto_data(data):
 
 
 def save_trade(close, name, bought, sold, amount):
-    trade = {
+    trade={
         "time_stamp": str(int(time.time())),
         "price_usd": close,
         "bought": bought,
@@ -159,80 +160,82 @@ def save_trade(close, name, bought, sold, amount):
         "amount": amount
     }
     print("TRADE:\n"+json.dumps(trade, indent=4))
-    trades = load_trades()
+    trades=load_trades()
     trades[name].append(trade)
     with open(Path(__file__).parent / "../JSON/Trades.json", "w") as f:
         json.dump(trades, f, indent=4)
 
 
 def buy_crypto(crypto_data, name):
-    analysis_data = clear_crypto_data(name)
-    price = float(crypto_data[-1][4])
-    funds = get_available_funds()
-    amount = funds * (1/price)
+    analysis_data=clear_crypto_data(name)
+    price=float(crypto_data[-1][4])
+    funds=get_available_funds()
+    amount=funds * (1/price)
     if(amount*price >= 10):
-        #order = binance.order_market_buy(name, amount)
-        balance = update_balance(amount, name, price, False)
+        # order = binance.order_market_buy(name, amount)
+        balance=update_balance(amount, name, price, False, False)
         save_trade(price, name, True, False, amount)
         print("BUY")
 
 
 def sell_crypto(crypto_data, name, modify):
-    balance = get_balance()
-    analysis_data = clear_crypto_data(name)
-    price = float(crypto_data[-1][4])
-    amount = float(balance[name[:-4]])
+    balance=get_balance()
+    analysis_data=clear_crypto_data(name)
+    price=float(crypto_data[-1][4])
+    amount=float(balance[name[:-4]])
     if(modify):
-        amount = amount/4
-    #order = binance.order_market_sell(name, amount)
-    balance = update_balance(amount, name, price, True)
+        amount=amount/4
+        balance=update_balance(amount, name, price, True, True)
+    else:
+        balance=update_balance(amount, name, price, True, False)
+    # order = binance.order_market_sell(name, amount)
     save_trade(price, name, False, True, amount)
     print("SELL")
 
 
 def clear_crypto_data(name):
-    data = load_crypto_data_from_file()
+    data=load_crypto_data_from_file()
     for key in data[name]:
-        data[name][key] = delete_entries(data[name], key)
+        data[name][key]=delete_entries(data[name], key)
     save_crypto_data(data)
     return data
 
 
 def delete_entries(data, key):
-    clean = []
+    clean=[]
     for entry in data[key][-10:]:
         clean.append(entry)
     return clean
 
 
 def get_available_funds():
-    balance = get_balance()
-    money = float(balance["USDT"])
-    crypto_not_owned = 1+(len(balance)-1)
-    funds = money / crypto_not_owned
+    balance=get_balance()
+    money=float(balance["USDT"])
+    crypto_not_owned=1+(len(balance)-1)
+    funds=money / crypto_not_owned
     return funds
 
 
 def Run(since, pairs, mva):
     for pair in pairs:
-        trades = load_trades()
+        trades=load_trades()
         if len(trades[pair]) > 0:
-            crypto_data = get_crypto_data(pair, since)
+            crypto_data=get_crypto_data(pair, since)
             if trades[pair][-1]['sold'] or trades[pair][-1] == None:
                 check_data(pair, crypto_data, True, mva)
             if trades[pair][-1]['bought']:
                 check_data(pair, crypto_data, False, mva)
         else:
-            crypto_data = get_crypto_data(symbol=pair, since=since)
+            crypto_data=get_crypto_data(symbol=pair, since=since)
             check_data(pair, crypto_data, True, mva)
     print("")
     time.sleep(14)
 
 
 def check_data(name, crypto_data, buy, mva):
-    high = 0
-    low = 0
-    close = 0
+    high=0
+    low=0
+    close=0
 
     for b in crypto_data[-100:]:
         if b not in mva[name]["prices"]:
@@ -255,14 +258,13 @@ def check_data(name, crypto_data, buy, mva):
 
 
 def try_buy(data, name, crypto_data):
-    make_trade = check_opportunity(data, name, False, True)
+    make_trade=check_opportunity(data, name, False, True)
     if make_trade:
         buy_crypto(crypto_data, name)
 
 
 def try_sell(data, name, crypto_data):
-    make_trade = check_opportunity(data, name, True, False)
-    print(make_trade)
+    make_trade=check_opportunity(data, name, True, False)
     if make_trade.get("trade"):
         sell_crypto(crypto_data, name, make_trade.get("modify"))
 
@@ -270,57 +272,57 @@ def try_sell(data, name, crypto_data):
 def check_opportunity(data, name, sell, buy):
     global i
 
-    count = 0
-    previous_value = 0
-    trends = []
+    count=0
+    previous_value=0
+    trends=[]
     for mva in data["close"][-10:]:
         if previous_value == 0:
-            previous_value = mva
+            previous_value=mva
         else:
             if mva/previous_value > 1:
                 if count < 1:
-                    count = 1
+                    count=1
                 else:
                     count += 1
                 trends.append("UPTREND")
             elif mva/previous_value < 1:
                 trends.append("DOWNTREND")
                 if count > 0:
-                    count = -1
+                    count=-1
                 else:
                     count -= 1
             else:
                 trends.append("NOTREND")
-            previous_value = mva
-    areas = []
+            previous_value=mva
+    areas=[]
     for mva in reversed(data["close"][-5:]):
-        area = 0
-        price = float(data["prices"][-1][4])
+        area=0
+        price=float(data["prices"][-1][4])
         if sell:
-            purchase_price = float(get_purchasing_price(name))
+            purchase_price=float(get_purchasing_price(name))
             if price >= (purchase_price + (purchase_price * i)):
-                if(i>=0):
+                if(i >= 0):
                     print("Should sell with profit:", i*100, ", price:",
-                        price, ", last purchase price:", purchase_price)
-                    i = 0.10
+                          price, ", last purchase price:", purchase_price)
+                    i=0.10
                     return {"trade": True, "modify": False}
-                elif(i<0):
+                elif(i < 0):
                     print("Should sell with loss:", i*100, ", price:",
-                        price, ", last purchase price:", purchase_price)
-                    i = 0.10
+                          price, ", last purchase price:", purchase_price)
+                    i=0.10
                     return {"trade": True, "modify": True}
             if price < purchase_price:
                 print("Would sell at a loss, acceptable price: ", purchase_price +
                       (purchase_price*i), " - Last purchase price: ", purchase_price, " - Current purchase price: ", price)
-                i = i - 0.01
+                i=i - 0.01
                 if(i <= -0.05):
-                    i = 0.1
+                    i=0.1
                 return {"trade": False, "modify": False}
 
         areas.append(mva / price)
 
     if buy:
-        counter = 0
+        counter=0
         if count >= 5:
             for area in areas:
                 counter += area
@@ -336,8 +338,8 @@ def check_opportunity(data, name, sell, buy):
             print("Current count:", count)
     print("Didn't buy", name, "acceptable price over",
           float(data["prices"][-1][3]))
-    
+
     if sell:
         return {"trade": False, "modify": False}
-    else: 
+    else:
         return False
